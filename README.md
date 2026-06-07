@@ -1,23 +1,36 @@
-# BlockAid — Blockchain Based Fundraising Platform
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-BSCS Final Year Project, Fall 2022 – 2026
-University of Lahore, Department of Computer Science & IT
-Project ID: Fall-2025-107
-Advisor: Sir Muhammad Tayyab
+## Getting Started
 
-## Team
+First, run the development server:
 
-- Hasaan Azmat — SAP 70137367
-- Muhammad Ghufran — SAP 70139820
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Overview
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-BlockAid is a hybrid Web2/Web3 fundraising platform built with Next.js 14, MongoDB, and Solidity smart contracts deployed to Polygon Amoy. Donations are held in escrow until campaign goals are met or refunds become available.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## Status
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-🚧 Phase 2 in development. See documentation for full scope.
+## Learn More
 
-## Setup
+To learn more about Next.js, take a look at the following resources:
 
-See `docs/SETUP.md` (coming soon).
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
