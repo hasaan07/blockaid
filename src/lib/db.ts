@@ -1,17 +1,20 @@
 /**
  * MongoDB connection helper.
- * Reuses the connection across hot reloads in development.
- * Used by every API route that touches the database.
+ *
+ * Connection caching strategy:
+ *   In development, Next.js hot-reloads modules on every file change, which
+ *   would create a new MongoDB connection on every request. We cache the
+ *   connection on the global object so all hot-reloads share one.
+ *
+ *   In production, connections are reused across requests within the same
+ *   serverless function instance.
+ *
+ * Why bufferCommands: false?
+ *   By default Mongoose buffers commands while disconnected. We want failures
+ *   to be loud and fast, not silently queued.
  */
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in .env.local");
-}
-
-// Cache the connection across hot reloads in dev to avoid creating new connections on every request.
 interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -33,8 +36,13 @@ export async function connectDB(): Promise<typeof mongoose> {
     return cached.conn;
   }
 
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI is not defined. Check .env.local.");
+  }
+
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI as string, {
+    cached.promise = mongoose.connect(uri, {
       bufferCommands: false,
     });
   }
