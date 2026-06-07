@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+build
+coverage
+artifacts
+cache
+typechain-types
+*.lock
+package-lock.json
