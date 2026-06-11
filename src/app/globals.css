@@ -3,25 +3,48 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Palette — "civic ledger" */
+  --ink: #16233a; /* deep navy-ink, primary text + dark surfaces */
+  --ink-soft: #3a4a63; /* secondary text */
+  --verdigris: #1f7a6b; /* trust/action accent (aged copper-green) */
+  --verdigris-dark: #185f54;
+  --verdigris-light: #e6f0ee;
+  --paper: #faf8f4; /* warm paper background */
+  --paper-edge: #ece7dd; /* hairline borders on paper */
+  --gold: #b08947; /* rare highlight — funded/success seal */
+  --danger: #a33a32; /* errors */
+  --danger-light: #f6e9e8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-feature-settings: "kern", "liga";
+  -webkit-font-smoothing: antialiased;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Display serif for headings */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
+/* Focus ring — accessibility floor */
+:focus-visible {
+  outline: 2px solid var(--verdigris);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

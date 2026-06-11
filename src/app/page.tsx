@@ -2,33 +2,70 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="from-brand-50 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br to-white p-8">
-      <div className="max-w-3xl text-center">
-        <h1 className="text-brand-700 mb-4 text-5xl font-bold">BlockAid</h1>
-        <p className="mb-2 text-xl text-gray-700">Blockchain Based Fundraising Platform</p>
-        <p className="mb-8 text-sm text-gray-500">
-          BSCS Final Year Project • University of Lahore • Fall 2025
-        </p>
-
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-lg font-semibold">🚧 Under Construction</h2>
-          <p className="mb-4 text-gray-600">
-            Phase 1 of 10 complete. Project skeleton is in place.
+    <div>
+      {/* Hero */}
+      <section className="border-b border-paper-edge">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+          <p className="text-sm font-semibold uppercase tracking-widest text-verdigris">
+            Transparent fundraising
           </p>
-          <p className="text-sm text-gray-500">
-            Coming next: smart contracts (Phase 2) and authentication (Phase 3).
+          <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.1] text-ink sm:text-6xl">
+            Give with proof,
+            <br />
+            not promises.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg text-ink-soft">
+            Every donation on BlockAid is held in an escrow smart contract and recorded on the
+            Polygon blockchain. Funds release to creators only when goals are met — otherwise
+            backers get refunded.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/campaigns"
+              className="rounded-md bg-verdigris px-6 py-3 font-semibold text-paper transition hover:bg-verdigris-dark"
+            >
+              Browse campaigns
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-md border border-paper-edge bg-white px-6 py-3 font-semibold text-ink transition hover:border-verdigris"
+            >
+              Start a campaign
+            </Link>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-8 flex justify-center gap-4 text-sm">
-          <Link
-            href="https://github.com/hasaan07/blockaid"
-            className="text-brand-600 hover:underline"
-          >
-            View on GitHub →
-          </Link>
+      {/* Three principles — a ledger, not a feature grid */}
+      <section className="mx-auto max-w-6xl px-5 py-16">
+        <div className="grid gap-px overflow-hidden rounded-lg border border-paper-edge bg-paper-edge sm:grid-cols-3">
+          {[
+            {
+              k: "Escrow",
+              t: "Funds held, not forwarded",
+              d: "Donations sit in the contract until the goal is reached. No goal, no release.",
+            },
+            {
+              k: "Refunds",
+              t: "Your money, returned",
+              d: "If a campaign misses its deadline, every backer can claim a full refund on-chain.",
+            },
+            {
+              k: "Proof",
+              t: "Verify every transaction",
+              d: "Each donation has a transaction hash you can inspect on Polygonscan yourself.",
+            },
+          ].map((item) => (
+            <div key={item.k} className="bg-paper p-6">
+              <span className="text-xs font-semibold uppercase tracking-widest text-verdigris">
+                {item.k}
+              </span>
+              <h3 className="mt-3 font-display text-xl font-semibold text-ink">{item.t}</h3>
+              <p className="mt-2 text-sm text-ink-soft">{item.d}</p>
+            </div>
+          ))}
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }
