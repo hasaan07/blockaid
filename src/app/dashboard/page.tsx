@@ -6,34 +6,47 @@ import { RequireUser } from "@/components/RequireUser";
 
 function DashboardContent() {
   const { user } = useAuth();
+
   return (
-    <div className="mx-auto max-w-4xl px-5 py-12">
-      <h1 className="font-display text-3xl font-semibold text-ink">
-        Welcome, {user?.name.split(" ")[0]}
-      </h1>
-      <p className="mt-2 text-ink-soft">
-        This is your dashboard. Campaign management lands here in the next build.
+    <section className="px-6 py-10 sm:px-16">
+      <h2 className="text-gradient mb-2 text-3xl font-bold">Dashboard Overview</h2>
+      <p className="mb-6 text-muted">
+        Welcome, {user?.name.split(" ")[0]}. Manage your campaigns and track donations here.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mb-8 flex flex-wrap gap-3.5">
         <Link
           href="/campaigns/new"
-          className="rounded-lg border border-paper-edge bg-white p-6 transition hover:border-verdigris"
+          className="rounded-full bg-gradient-to-br from-purple-deep to-cyan px-7 py-3 font-semibold text-white shadow-glow-primary transition hover:scale-105"
         >
-          <h2 className="font-display text-xl font-semibold text-ink">Start a campaign</h2>
-          <p className="mt-1 text-sm text-ink-soft">
-            Deploy an escrow contract and begin raising funds.
-          </p>
+          Add New Campaign
         </Link>
         <Link
           href="/campaigns"
-          className="rounded-lg border border-paper-edge bg-white p-6 transition hover:border-verdigris"
+          className="rounded-full border border-cyan px-7 py-3 font-semibold text-cyan transition hover:bg-cyan hover:text-ink"
         >
-          <h2 className="font-display text-xl font-semibold text-ink">Browse campaigns</h2>
-          <p className="mt-1 text-sm text-ink-soft">Find a cause worth backing.</p>
+          Browse Campaigns
         </Link>
       </div>
-    </div>
+
+      <div className="flex flex-wrap gap-6">
+        {[
+          { label: "Total Campaigns", value: "—" },
+          { label: "Total Donations", value: "—" },
+          { label: "Active Campaigns", value: "—" },
+          { label: "Total Donors", value: "—" },
+        ].map((s) => (
+          <div key={s.label} className="glass flex-1 p-7" style={{ flexBasis: "240px" }}>
+            <h3 className="text-lg font-semibold text-white">{s.label}</h3>
+            <p className="mt-2 text-2xl font-bold text-cyan">{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-8 text-sm text-muted">
+        Live campaign data and donation history will appear here once campaign browsing is wired up.
+      </p>
+    </section>
   );
 }
 

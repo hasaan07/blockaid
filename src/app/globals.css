@@ -3,17 +3,21 @@
 @tailwind utilities;
 
 :root {
-  /* Palette — "civic ledger" */
-  --ink: #16233a; /* deep navy-ink, primary text + dark surfaces */
-  --ink-soft: #3a4a63; /* secondary text */
-  --verdigris: #1f7a6b; /* trust/action accent (aged copper-green) */
-  --verdigris-dark: #185f54;
-  --verdigris-light: #e6f0ee;
-  --paper: #faf8f4; /* warm paper background */
-  --paper-edge: #ece7dd; /* hairline borders on paper */
-  --gold: #b08947; /* rare highlight — funded/success seal */
-  --danger: #a33a32; /* errors */
-  --danger-light: #f6e9e8;
+  /* BLOCK AID palette */
+  --bg-top: #111827;
+  --bg-bottom: #020617;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-edge: rgba(255, 255, 255, 0.1);
+  --cyan: #22d3ee;
+  --purple: #a855f7;
+  --purple-deep: #9333ea;
+  --pink: #f472b6;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --login-blue: #2563eb;
+  --signup-green: #16a34a;
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.12);
 }
 
 * {
@@ -25,26 +29,78 @@ html {
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-feature-settings: "kern", "liga";
+  background: radial-gradient(circle at top, var(--bg-top), var(--bg-bottom));
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Display serif for headings */
-.font-display {
-  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+/* Gradient-clipped heading text (the BLOCK AID signature) */
+.text-gradient {
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* Focus ring — accessibility floor */
+.text-gradient-hero {
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glass card */
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  box-shadow: 0 0 25px rgba(34, 211, 238, 0.15);
+}
+
+/* Accessibility: visible keyboard focus */
 :focus-visible {
-  outline: 2px solid var(--verdigris);
+  outline: 2px solid var(--cyan);
   outline-offset: 2px;
+}
+
+/* Native progress element styling (used as the funding bar) */
+progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+progress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+progress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  border-radius: 10px;
+}
+progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  border-radius: 10px;
+}
+
+/* Custom scrollbar hide for carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

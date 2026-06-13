@@ -14,79 +14,64 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-paper-edge bg-paper/90 backdrop-blur">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Link href="/" className="flex items-baseline gap-2">
-          <span className="font-display text-2xl font-semibold text-ink">BlockAid</span>
-          <span className="hidden text-xs uppercase tracking-widest text-verdigris sm:inline">
-            Ledger of Giving
-          </span>
-        </Link>
+    <header className="flex flex-wrap items-center justify-between bg-ink px-6 py-4 sm:px-8">
+      <Link href="/">
+        <h1 className="text-gradient text-2xl font-bold">BLOCK AID</h1>
+      </Link>
 
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/campaigns"
-            className="rounded px-3 py-2 text-sm font-medium text-ink-soft transition hover:text-ink"
-          >
-            Browse
+      <div className="flex flex-wrap items-center gap-1">
+        <nav className="flex flex-wrap items-center">
+          <Link href="/" className="ml-4 font-bold text-white hover:underline">
+            Home
           </Link>
+          <Link href="/campaigns" className="ml-4 font-bold text-white hover:underline">
+            Campaigns
+          </Link>
+          {user && (
+            <Link href="/dashboard" className="ml-4 font-bold text-white hover:underline">
+              Dashboard
+            </Link>
+          )}
+          {user && (
+            <Link href="/profile" className="ml-4 font-bold text-white hover:underline">
+              Profile
+            </Link>
+          )}
+          {user?.role === "admin" && (
+            <Link href="/admin" className="ml-4 font-bold text-cyan hover:underline">
+              Admin
+            </Link>
+          )}
+        </nav>
 
+        <div className="flex items-center">
           {loading ? (
-            <div className="h-9 w-20 animate-pulse rounded bg-paper-edge" />
+            <div className="ml-3 h-9 w-24 animate-pulse rounded bg-white/10" />
           ) : user ? (
-            <>
-              <Link
-                href="/campaigns/new"
-                className="rounded px-3 py-2 text-sm font-medium text-ink-soft transition hover:text-ink"
-              >
-                Start a campaign
-              </Link>
-              <Link
-                href="/dashboard"
-                className="rounded px-3 py-2 text-sm font-medium text-ink-soft transition hover:text-ink"
-              >
-                Dashboard
-              </Link>
-              {user.role === "admin" && (
-                <Link
-                  href="/admin"
-                  className="rounded px-3 py-2 text-sm font-medium text-gold transition hover:opacity-80"
-                >
-                  Admin
-                </Link>
-              )}
-              <div className="mx-1 hidden h-5 w-px bg-paper-edge sm:block" />
-              <Link
-                href="/profile"
-                className="rounded px-3 py-2 text-sm font-medium text-ink transition hover:text-verdigris"
-              >
-                {user.name.split(" ")[0]}
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="rounded px-3 py-2 text-sm font-medium text-ink-soft transition hover:text-danger"
-              >
-                Log out
-              </button>
-            </>
+            <button
+              onClick={handleLogout}
+              className="ml-3 rounded-md bg-loginblue px-4 py-2 text-sm font-bold text-white transition hover:bg-loginblue-dark"
+            >
+              Log out
+            </button>
           ) : (
             <>
               <Link
                 href="/login"
-                className="rounded px-3 py-2 text-sm font-medium text-ink transition hover:text-verdigris"
+                className="ml-3 rounded-md bg-loginblue px-4 py-2 text-sm font-bold text-white transition hover:bg-loginblue-dark"
               >
-                Log in
+                Login
               </Link>
               <Link
                 href="/register"
-                className="rounded-md bg-verdigris px-4 py-2 text-sm font-semibold text-paper transition hover:bg-verdigris-dark"
+                className="ml-2 rounded-md bg-signupgreen px-4 py-2 text-sm font-bold text-white transition hover:bg-signupgreen-dark"
               >
-                Sign up
+                Sign Up
               </Link>
             </>
           )}
         </div>
-      </nav>
+      </div>
     </header>
   );
 }

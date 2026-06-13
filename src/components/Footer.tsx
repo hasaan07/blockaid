@@ -1,13 +1,13 @@
 export function Footer() {
   return (
-    <footer className="border-t border-paper-edge bg-paper">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink-soft sm:flex-row">
-        <p>
-          <span className="font-display font-semibold text-ink">BlockAid</span> — Final Year
-          Project, University of Lahore
-        </p>
-        <p className="text-xs">Donations held in escrow · Verifiable on Polygon Amoy</p>
-      </div>
+    <footer className="px-6 py-8 text-center text-muted">
+      <h3 className="mb-2 text-lg font-semibold text-body">About BLOCK AID</h3>
+      <p className="mx-auto max-w-2xl text-sm">
+        BLOCK AID is a blockchain-based donation platform developed as a Final Year Project. The aim
+        is to bring transparency and trust to online fundraising systems. All donations are held in
+        escrow and processed via smart contracts on Polygon.
+      </p>
+      <p className="mt-3 text-sm">© 2025 BLOCK AID | All Rights Reserved</p>
     </footer>
   );
 }

@@ -6,6 +6,16 @@ import { RequireUser } from "@/components/RequireUser";
 import { Field, TextareaField } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 function ProfileForm() {
   const { user, refresh } = useAuth();
 
@@ -27,7 +37,6 @@ function ProfileForm() {
   async function handleSave() {
     setError("");
     setSuccess("");
-
     if (name.trim().length < 1) return setError("Name is required.");
     if (walletAddress && !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
       return setError("Wallet address must be a 0x-prefixed 40-character hex string.");
@@ -55,54 +64,68 @@ function ProfileForm() {
   }
 
   return (
-    <div className="mx-auto max-w-xl px-5 py-12">
-      <h1 className="font-display text-3xl font-semibold text-ink">Your profile</h1>
-      <p className="mt-2 text-ink-soft">
-        Your email is <span className="font-medium text-ink">{user?.email}</span>
-        {user?.role === "admin" && (
-          <span className="ml-2 rounded bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
-            Admin
-          </span>
-        )}
-      </p>
+    <section className="flex min-h-[calc(100vh-200px)] items-center justify-center px-5 py-12">
+      <div className="glass w-full max-w-xl p-8">
+        <h2 className="text-gradient mb-3 text-3xl font-bold">Edit Profile</h2>
+        <p className="mb-6 text-sm text-muted">Update your profile details below.</p>
 
-      <div className="mt-8 flex flex-col gap-4">
-        <Field
-          label="Full name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextareaField
-          label="Bio"
-          name="bio"
-          rows={3}
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          placeholder="A short line about you or your cause."
-        />
-        <Field
-          label="Wallet address (optional)"
-          name="walletAddress"
-          value={walletAddress}
-          onChange={(e) => setWalletAddress(e.target.value)}
-          placeholder="0x…"
-        />
-
-        {error && (
-          <div className="rounded-md bg-danger-light px-3 py-2 text-sm text-danger">{error}</div>
-        )}
-        {success && (
-          <div className="rounded-md bg-verdigris-light px-3 py-2 text-sm text-verdigris-dark">
-            {success}
+        <div className="mb-6 flex flex-wrap items-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-white/10 font-bold text-[#cbd5f5]">
+            {user ? initials(user.name) : "··"}
           </div>
-        )}
+          <div>
+            <p className="font-semibold text-body">{user?.name}</p>
+            <p className="text-sm text-muted">
+              Role: {user?.role === "admin" ? "Administrator" : "Donor / Creator"}
+            </p>
+          </div>
+        </div>
 
-        <Button onClick={handleSave} loading={loading} className="mt-2 self-start">
-          Save changes
-        </Button>
+        <div className="grid gap-4">
+          <Field
+            label="Full Name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Field
+            label="Email Address"
+            name="email"
+            type="email"
+            value={user?.email || ""}
+            disabled
+            className="opacity-60"
+          />
+          <TextareaField
+            label="Bio"
+            name="bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="A short line about you or your cause."
+          />
+          <Field
+            label="Wallet Address (optional)"
+            name="walletAddress"
+            value={walletAddress}
+            onChange={(e) => setWalletAddress(e.target.value)}
+            placeholder="0x..."
+          />
+
+          {error && (
+            <div className="rounded-2xl bg-[rgba(248,113,113,0.12)] px-4 py-3 text-sm text-danger">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="rounded-2xl bg-cyan/10 px-4 py-3 text-sm text-cyan">{success}</div>
+          )}
+
+          <Button onClick={handleSave} loading={loading} className="mt-2 self-start">
+            Save Changes
+          </Button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
