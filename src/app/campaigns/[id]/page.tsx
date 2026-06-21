@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { campaignImage } from "@/lib/campaignImage";
 import { weiToPol, percentFunded, shortAddress, formatDate, timeRemaining } from "@/lib/format";
 import { Badge } from "@/components/ui/Card";
 import type { CampaignDetail, DonationItem, FeedItem, CampaignOwner } from "@/types";
+import { DonatePanel } from "@/components/DonatePanel";
 
 function ownerName(o: CampaignOwner | string | undefined): string {
   if (!o) return "Unknown";
@@ -25,42 +26,35 @@ export default function CampaignDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/campaigns/${id}`);
-        if (res.status === 404) {
-          if (active) setNotFound(true);
-          return;
-        }
-        if (!res.ok) throw new Error("Failed to load");
-        const data = await res.json();
-        if (!active) return;
-        setCampaign(data);
-
-        // Fetch related data in parallel (non-blocking for the main view).
-        const [dRes, uRes, cRes] = await Promise.all([
-          fetch(`/api/donations?campaignId=${id}&limit=50`),
-          fetch(`/api/campaigns/${id}/updates`),
-          fetch(`/api/campaigns/${id}/comments`),
-        ]);
-        if (!active) return;
-        if (dRes.ok) setDonations((await dRes.json()).items);
-        if (uRes.ok) setUpdates((await uRes.json()).items);
-        if (cRes.ok) setComments((await cRes.json()).items);
-      } catch {
-        if (active) setNotFound(true);
-      } finally {
-        if (active) setLoading(false);
+  const loadAll = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/campaigns/${id}`);
+      if (res.status === 404) {
+        setNotFound(true);
+        return;
       }
+      if (!res.ok) throw new Error("Failed to load");
+      const data = await res.json();
+      setCampaign(data);
+
+      const [dRes, uRes, cRes] = await Promise.all([
+        fetch(`/api/donations?campaignId=${id}&limit=50`),
+        fetch(`/api/campaigns/${id}/updates`),
+        fetch(`/api/campaigns/${id}/comments`),
+      ]);
+      if (dRes.ok) setDonations((await dRes.json()).items);
+      if (uRes.ok) setUpdates((await uRes.json()).items);
+      if (cRes.ok) setComments((await cRes.json()).items);
+    } catch {
+      setNotFound(true);
+    } finally {
+      setLoading(false);
     }
-    load();
-    return () => {
-      active = false;
-    };
   }, [id]);
+
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
 
   if (loading) {
     return <div className="px-6 py-24 text-center text-muted">Loading campaign…</div>;
@@ -182,20 +176,13 @@ export default function CampaignDetailsPage() {
             </div>
           )}
 
-          {/* Donation panel — wallet wiring lands in the next build step */}
-          <div className="mt-6 rounded-2xl border border-cyan/25 bg-cyan/5 p-5">
-            <h4 className="font-semibold text-body">Support this campaign</h4>
-            <p className="mt-1 text-sm text-muted">
-              On-chain donations through MetaMask are enabled in the next build step. Funds will be
-              held in escrow and released only when the goal is met.
-            </p>
-            <button
-              disabled
-              className="mt-4 cursor-not-allowed rounded-full bg-gradient-to-br from-purple-deep to-cyan px-7 py-3 text-sm font-semibold text-white opacity-50"
-            >
-              Donate (coming soon)
-            </button>
-          </div>
+          <DonatePanel
+            campaignId={campaign.id}
+            contractAddress={campaign.contractAddress}
+            ended={ended}
+            withdrawn={campaign.status === "withdrawn"}
+            onDonated={loadAll}
+          />
         </div>
 
         {/* ASIDE */}

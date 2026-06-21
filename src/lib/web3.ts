@@ -13,6 +13,33 @@ import {
 import { CAMPAIGN_FACTORY_ABI, CAMPAIGN_ABI } from "@/lib/abis";
 import { FACTORY_ADDRESS, AMOY_RPC } from "@/lib/contracts";
 
+/**
+ * Polygon Amoy enforces a minimum gas tip (~25 gwei) that MetaMask often
+ * underestimates, causing "gas price below minimum" rejections. We fetch the
+ * network's current fee data and floor the priority fee at 30 gwei to stay
+ * safely above the minimum.
+ */
+async function getAmoyFeeOverrides(signer: JsonRpcSigner) {
+  const provider = signer.provider;
+  const feeData = await provider.getFeeData();
+
+  const MIN_PRIORITY = 30_000_000_000n; // 30 gwei, comfortably above Amoy's 25 gwei floor
+
+  const priority =
+    feeData.maxPriorityFeePerGas && feeData.maxPriorityFeePerGas > MIN_PRIORITY
+      ? feeData.maxPriorityFeePerGas
+      : MIN_PRIORITY;
+
+  // maxFee = base fee (approx) + priority. Use network maxFeePerGas if it's higher.
+  const base = feeData.maxFeePerGas ?? MIN_PRIORITY * 2n;
+  const maxFee = base > priority ? base : priority * 2n;
+
+  return {
+    maxPriorityFeePerGas: priority,
+    maxFeePerGas: maxFee,
+  };
+}
+
 /** Read-only provider for fetching on-chain state without a wallet. */
 export function getReadProvider(): JsonRpcProvider {
   return new JsonRpcProvider(AMOY_RPC);
@@ -84,7 +111,8 @@ export async function createCampaignOnChain(
   deadlineUnix: number
 ): Promise<{ tx: ContractTransactionResponse; address: string }> {
   const factory = getFactoryWriteContract(signer);
-  const tx = await factory.createCampaign(title, goalWei, deadlineUnix);
+  const fees = await getAmoyFeeOverrides(signer);
+  const tx = await factory.createCampaign(title, goalWei, deadlineUnix, fees);
   const receipt = await tx.wait();
 
   // Parse the CampaignCreated event to get the new contract address.
@@ -110,7 +138,8 @@ export async function donateOnChain(
   amountWei: bigint
 ): Promise<ContractTransactionResponse> {
   const c = getCampaignWriteContract(campaignAddress, signer);
-  return c.donate({ value: amountWei });
+  const fees = await getAmoyFeeOverrides(signer);
+  return c.donate({ value: amountWei, ...fees });
 }
 
 export async function withdrawOnChain(
@@ -118,7 +147,8 @@ export async function withdrawOnChain(
   campaignAddress: string
 ): Promise<ContractTransactionResponse> {
   const c = getCampaignWriteContract(campaignAddress, signer);
-  return c.withdraw();
+  const fees = await getAmoyFeeOverrides(signer);
+  return c.withdraw(fees);
 }
 
 export async function refundOnChain(
@@ -126,5 +156,6 @@ export async function refundOnChain(
   campaignAddress: string
 ): Promise<ContractTransactionResponse> {
   const c = getCampaignWriteContract(campaignAddress, signer);
-  return c.refund();
+  const fees = await getAmoyFeeOverrides(signer);
+  return c.refund(fees);
 }
