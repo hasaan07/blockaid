@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
+import { WalletButton } from "@/components/WalletButton";
 
 export function Navbar() {
   const { user, loading, logout } = useAuth();
@@ -43,6 +44,10 @@ export function Navbar() {
             </Link>
           )}
         </nav>
+
+        <div className="ml-3 hidden sm:block">
+          <WalletButton />
+        </div>
 
         <div className="flex items-center">
           {loading ? (

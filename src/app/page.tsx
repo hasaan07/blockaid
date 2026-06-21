@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import { HeroCta } from "@/components/HeroCta";
 
 const coreFeatures = [
   {
@@ -56,18 +56,7 @@ export default function Home() {
           trust using blockchain technology.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/campaigns"
-            className="rounded-full bg-gradient-to-br from-purple-deep to-cyan px-8 py-3.5 font-semibold text-white shadow-glow-primary transition hover:scale-105"
-          >
-            Explore Campaigns
-          </Link>
-          <Link
-            href="/login"
-            className="rounded-full border border-cyan px-8 py-3.5 font-semibold text-cyan transition hover:bg-cyan hover:text-ink"
-          >
-            Connect Wallet
-          </Link>
+          <HeroCta />
         </div>
       </section>
 
