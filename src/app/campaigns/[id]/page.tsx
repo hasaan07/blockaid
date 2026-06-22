@@ -9,6 +9,7 @@ import { weiToPol, percentFunded, shortAddress, formatDate, timeRemaining } from
 import { Badge } from "@/components/ui/Card";
 import type { CampaignDetail, DonationItem, FeedItem, CampaignOwner } from "@/types";
 import { DonatePanel } from "@/components/DonatePanel";
+import { FundActions } from "@/components/FundActions";
 
 function ownerName(o: CampaignOwner | string | undefined): string {
   if (!o) return "Unknown";
@@ -36,6 +37,9 @@ export default function CampaignDetailsPage() {
       if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
       setCampaign(data);
+
+      // Sync DB status with on-chain state (fire-and-forget; non-blocking).
+      fetch(`/api/campaigns/${id}/sync`, { method: "POST" }).catch(() => {});
 
       const [dRes, uRes, cRes] = await Promise.all([
         fetch(`/api/donations?campaignId=${id}&limit=50`),
@@ -183,6 +187,8 @@ export default function CampaignDetailsPage() {
             withdrawn={campaign.status === "withdrawn"}
             onDonated={loadAll}
           />
+
+          <FundActions contractAddress={campaign.contractAddress} onChanged={loadAll} />
         </div>
 
         {/* ASIDE */}
