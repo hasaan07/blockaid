@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/Card";
 import type { CampaignDetail, DonationItem, FeedItem, CampaignOwner } from "@/types";
 import { DonatePanel } from "@/components/DonatePanel";
 import { FundActions } from "@/components/FundActions";
+import { useAuth } from "@/components/AuthProvider";
+import { UpdateForm } from "@/components/UpdateForm";
+import { CommentForm } from "@/components/CommentForm";
 
 function ownerName(o: CampaignOwner | string | undefined): string {
   if (!o) return "Unknown";
@@ -26,6 +29,7 @@ export default function CampaignDetailsPage() {
   const [comments, setComments] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { user } = useAuth();
 
   const loadAll = useCallback(async () => {
     try {
@@ -60,6 +64,25 @@ export default function CampaignDetailsPage() {
     loadAll();
   }, [loadAll]);
 
+  async function handleDeleteComment(commentId: string) {
+    if (!confirm("Delete this comment? This cannot be undone.")) return;
+    try {
+      const res = await fetch(`/api/admin/comments/${commentId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ reason: "Removed by admin" }),
+      });
+      if (res.ok) {
+        loadAll(); // refresh comments
+      } else {
+        alert("Failed to delete comment.");
+      }
+    } catch {
+      alert("Failed to delete comment.");
+    }
+  }
+
   if (loading) {
     return <div className="px-6 py-24 text-center text-muted">Loading campaign…</div>;
   }
@@ -82,6 +105,9 @@ export default function CampaignDetailsPage() {
   const pct = percentFunded(campaign.receivedWei, campaign.goalWei);
   const uniqueBackers = new Set(donations.map((d) => d.backerWallet)).size;
   const ended = new Date(campaign.deadline).getTime() <= Date.now();
+
+  const ownerId = typeof campaign.owner === "string" ? campaign.owner : campaign.owner?._id;
+  const isOwner = !!user && !!ownerId && user.id === ownerId;
 
   return (
     <section className="px-6 py-10 sm:px-12">
@@ -214,8 +240,14 @@ export default function CampaignDetailsPage() {
           </div>
 
           {/* Updates */}
+          {/* Updates */}
           <div className="glass p-6">
             <h4 className="font-semibold text-body">Updates</h4>
+            {isOwner && (
+              <div className="mt-3">
+                <UpdateForm campaignId={campaign.id} onPosted={loadAll} />
+              </div>
+            )}
             {updates.length === 0 ? (
               <p className="mt-3 text-sm text-muted">No updates posted yet.</p>
             ) : (
@@ -235,6 +267,9 @@ export default function CampaignDetailsPage() {
           {/* Comments */}
           <div className="glass p-6">
             <h4 className="font-semibold text-body">Comments</h4>
+            <div className="mt-3">
+              <CommentForm campaignId={campaign.id} onPosted={loadAll} />
+            </div>
             {comments.length === 0 ? (
               <p className="mt-3 text-sm text-muted">No comments yet.</p>
             ) : (
@@ -244,18 +279,25 @@ export default function CampaignDetailsPage() {
                     key={c.id}
                     className="rounded-xl border border-white/10 bg-[rgba(2,6,23,0.25)] px-3 py-2.5"
                   >
-                    <p className="text-xs text-muted">
-                      <strong className="text-body">{ownerName(c.author)}</strong> ·{" "}
-                      {formatDate(c.createdAt)}
-                    </p>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-xs text-muted">
+                        <strong className="text-body">{ownerName(c.author)}</strong> ·{" "}
+                        {formatDate(c.createdAt)}
+                      </p>
+                      {user?.role === "admin" && (
+                        <button
+                          onClick={() => handleDeleteComment(c.id)}
+                          className="text-xs text-danger hover:underline"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
                     <p className="mt-1 text-sm text-body">{c.body}</p>
                   </li>
                 ))}
               </ul>
             )}
-            <p className="mt-3 text-xs text-muted">
-              Posting comments is enabled once you can sign in and interact (next builds).
-            </p>
           </div>
         </aside>
       </div>
