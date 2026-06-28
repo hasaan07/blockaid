@@ -27,11 +27,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Type-check
-        run: npm run type-check
-
       - name: Compile contracts
         run: npx hardhat build
+
+      - name: Type-check
+        run: npm run type-check
 
       - name: Run contract tests
         run: npx hardhat test
