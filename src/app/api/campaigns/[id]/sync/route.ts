@@ -65,6 +65,15 @@ export async function POST(_req: Request, { params }: Params) {
       receivedWei: campaign.receivedWei,
     });
   } catch (err) {
+    // A fake/seeded contract address (used in tests) or an unreachable RPC will
+    // throw BAD_DATA / decode errors. That's expected — just report it quietly.
+    const code = (err as { code?: string })?.code;
+    if (code === "BAD_DATA" || code === "CALL_EXCEPTION") {
+      return NextResponse.json(
+        { error: "No on-chain data for this contract (sync skipped)" },
+        { status: 200 }
+      );
+    }
     console.error("Sync error:", err);
     return NextResponse.json({ error: "Failed to sync with chain" }, { status: 500 });
   }
