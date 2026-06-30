@@ -4,7 +4,7 @@
 
 BlockAid is a decentralized donation platform built as a Final Year Project at the University of Lahore. It brings transparency and trust to online fundraising by holding donations in escrow smart contracts on the Polygon network. Funds are released to campaign creators only when funding goals are met — otherwise, backers can reclaim their contributions.
 
-**Live demo:** _add your Vercel URL here_
+**Live demo:** blockaid-beryl.vercel.app
 
 ---
 
@@ -23,19 +23,19 @@ BlockAid is a decentralized donation platform built as a Final Year Project at t
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 14 (App Router), React 18, TypeScript |
-| Styling | Tailwind CSS (dark glassmorphism design) |
-| Database | MongoDB Atlas with Mongoose |
-| Auth | JWT (HttpOnly cookies), bcrypt, Zod validation |
-| Smart contracts | Solidity 0.8.24, Hardhat 3 |
-| Blockchain | Polygon Amoy testnet (chain ID 80002) |
-| Web3 | ethers.js v6, MetaMask |
-| File storage | IPFS via Pinata |
-| Testing | Hardhat (contracts), Playwright (E2E) |
-| CI/CD | GitHub Actions |
-| Deployment | Vercel |
+| Layer           | Technology                                     |
+| --------------- | ---------------------------------------------- |
+| Framework       | Next.js 14 (App Router), React 18, TypeScript  |
+| Styling         | Tailwind CSS (dark glassmorphism design)       |
+| Database        | MongoDB Atlas with Mongoose                    |
+| Auth            | JWT (HttpOnly cookies), bcrypt, Zod validation |
+| Smart contracts | Solidity 0.8.24, Hardhat 3                     |
+| Blockchain      | Polygon Amoy testnet (chain ID 80002)          |
+| Web3            | ethers.js v6, MetaMask                         |
+| File storage    | IPFS via Pinata                                |
+| Testing         | Hardhat (contracts), Playwright (E2E)          |
+| CI/CD           | GitHub Actions                                 |
+| Deployment      | Vercel                                         |
 
 ---
 
