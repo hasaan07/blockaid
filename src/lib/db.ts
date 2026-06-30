@@ -13,6 +13,7 @@
  *   By default Mongoose buffers commands while disconnected. We want failures
  *   to be loud and fast, not silently queued.
  */
+import "@/models/index";
 import mongoose from "mongoose";
 
 interface MongooseCache {
