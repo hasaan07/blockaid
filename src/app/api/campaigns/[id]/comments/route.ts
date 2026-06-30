@@ -9,6 +9,10 @@ import { Campaign } from "@/models/Campaign";
 import { Comment } from "@/models/Comment";
 import { requireAuth } from "@/middleware/requireAuth";
 import { createCommentSchema } from "@/lib/validation";
+import { User } from "@/models/User";
+
+// Ensure the User model is registered for populate("owner") on serverless.
+void User;
 
 interface Params {
   params: Promise<{ id: string }>;

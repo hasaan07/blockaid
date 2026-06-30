@@ -12,6 +12,10 @@ import { connectDB } from "@/lib/db";
 import { Campaign } from "@/models/Campaign";
 import { requireAuth } from "@/middleware/requireAuth";
 import { createCampaignSchema, listCampaignsQuerySchema } from "@/lib/validation";
+import { User } from "@/models/User";
+
+// Ensure the User model is registered for populate("owner") on serverless.
+void User;
 
 export async function POST(req: Request) {
   const auth = await requireAuth();
